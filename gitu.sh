@@ -15,4 +15,4 @@ while getopts ":m:" opt; do
       ;;
   esac
 done
-
+git push origin master
