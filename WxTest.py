@@ -7,19 +7,24 @@ class WindowTest(wx.Frame):
 		self.control = wx.TextCtrl(self, style=wx.TE_MULTILINE)
 		self.CreateStatusBar() # A Statusbar in the bottom of the window
 
-        # Setting up the menu.
+		# Setting up the menu.
 		filemenu= wx.Menu()
 		fileNewItem=filemenu.Append(wx.NewId(), "&New","Create a blank document")
 		self.Bind(wx.EVT_MENU, self.FileNew,fileNewItem)
-        
+
 		menuBar = wx.MenuBar()
 		menuBar.Append(filemenu,"&File") # Adding the "filemenu" to the MenuBar
 		self.SetMenuBar(menuBar)
 		self.Show(True)
+
 	def FileNew(self,event=None):
 		self.Msg(self,"Under Construction","Hello")
-	def Msg(self,parent,message,caption):
-		dlg =wx.MessageDialog(self,message,caption,wx.OK)
+
+	def Msg(self,event,message,caption):
+		dlg=wx.MessageDialog(self,message,caption,wx.OK)
+		dlg.ShowModal()
+
+        
 
 
 app = wx.App(False)
