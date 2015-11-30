@@ -3,7 +3,7 @@ import signal
 from PIgpo import Quad
 from PIgpo import timer
 
-t = timer(3)
+t = timer()
 j=0
 def INTtest(signum, frame):
 	global j
@@ -26,10 +26,15 @@ try:
 	while True:
 		i+=1
 		print "%i"%i
-except KeyboardInterrupt:
-	pass	
+	print "while"
+#except KeyboardInterrupt:
+#	pass	
 except:
-	raise
+	pass
+finally:
+	print "Hellow"
+
+print "Jiggly puff"
 
 
 	
