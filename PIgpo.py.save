@@ -19,7 +19,7 @@ print "mode {0}\n".format(GPIO.getmode()) #Check the pin-numbering mode
 GPIO.setup(inPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 #GPIO.setup(testPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 class RC:
-	def __init__(self):
+	def _init_(self):
 		self.code = int('0000000000000',2)
 		self.command = self.__command(self.code)
 		self.address = self.__address(self.code)
@@ -32,26 +32,6 @@ class RC:
 	def __address(self,code):
 		return self.code & int('11111000000',2)>>6
 	#def __process(self,Pin):
-class Quad:
-	def __init__(self,w,l):
-		self.width=w
-		self.length=l
-	def area(self):
-		return (self.width*self.length)
-
-
-class timer:
-	def __init__(self,sec):
-		self.sec=sec
-	def start(self):
-		signal.signal(signal.SIGALRM,self.timeout)
-		signal.alarm(self.sec)
-	def clear(self):
-		signal.alarm(0)
-	def timeout(self):
-		pass
-
-		
 		
 def comp(num,base,TOL):
 	if abs(num-base)<TOL:
@@ -59,44 +39,38 @@ def comp(num,base,TOL):
 	else:
 		return False
 
-def sigINT_handler(signum, frame):
+def signal_handler(signum, frame):
 	print"Length of tdiff = {0}".format(len(tdiff))
 
+signal.signal(signal.SIGINT,signal_handler)	
+B =5
+t=[]
+tdiff=[] 
+N=20
+val=[]
 
-if __name__ == '__main__':
+for i in range(0,B):
+	val[i].append([0]*N)
+
+b=0;
 
 
-	signal.signal(signal.SIGINT,sigINT_handler)	
-
-	t=[]
-	tdiff=[] 
-	N=20
-	val =[0]*N
-	count=0
-	i=0;
-
-	GPIO.wait_for_edge(inPin, GPIO.FALLING)
-	t.append(time.time())
-	try:		
-		while True:
-			timer(0.01).start()
-			GPIO.wait_for_edge(inPin, GPIO.FALLING)
-			timer.clear()
-			t.append(time.time())
-			tdiff.append(t[i+1]-t[i])
-			i+=1
-	except:
-		pass
-
-	for i in range(0,N):
-		if comp(tdiff[i],0.001,0.0003):
-			val[i]=1
-		elif comp(tdiff[i],0.002,0.0004):
-			val[i]=0
-		else:
-			val[i]=2	
-		print"{0:.3f} => {1}".format(tdiff[i],val[i])
-		count+=1	
+GPIO.wait_for_edge(inPin, GPIO.FALLING)
+t.append(time.time())		
+while b<B:
+for i in range(0,N):	
+		GPIO.wait_for_edge(inPin, GPIO.FALLING)
+		t.append(time.time())
+		tdiff.append(t[i+1]-t[i]
+for i in range(0,N):
+	if comp(tdiff[i],0.001,0.0003):
+		val[i]=1
+	elif comp(tdiff[i],0.002,0.0004):
+		val[i]=0
+	else:
+		val[i]=2	
+	print"{0:.3f} => {1}".format(tdiff[i],val[i])
+	count+=1	
 	
 	
 #try:
