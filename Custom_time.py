@@ -1,14 +1,15 @@
-# This is the test program for the PI GPO
+# This is the test program for signal amd threading class
 
 
 import time
 import sys
 import signal
 import threading
+import os
 
 	
 
-class Timer:
+class Timer(object):
 	def __init__(self, start_time=0,format="s", handle_enable="n"):
 		self.at=0
 		self.st= start_time
@@ -46,20 +47,60 @@ class Timer:
 			self.stop()
 			self.__toggle=True
 		
-		
+class Timeout(threading.Thread):
+	def __init__(self,end_time=0,start_time=0,format='s',target=None, name=None, group=None,*args,**kwargs):
+		super(Timeout,self).__init__(name=name, target=target,group=group,*args,**kwargs) 
+	#threading.Thread has the following __init__ function
+	#def __init__(self, group=None, target=None, name=None,
+    #args=(), kwargs=None, verbose=None)
+		self.et=end_time
+		if format != 'm' and format !='s':
+			sys.exit("AttributeError: format only accepts 's' for seconds or 'm' for milli seconds")
+		self.timer=Timer(start_time=start_time,format=format)
+		self.__kill=0
+	def __str__(self):
+			if self.timer.format is's':
+				unit = "s"
+			else:
+				unit = "ms"
+			return ("name:{0}\nstart_time:{1}\nend_time:{2}{3}".format(self.name,self.timer.st,self.et, unit))		
+	def run(self):
+			self.timer.start()
+			while(self.timer.lap()<self.et and self.__kill==0):
+				pass
+			if self.__kill==1:	
+				self.__kill=0
+			elif self.__kill==0:
+				os.kill(os.getpid(), signal.SIGUSR1)
+	def reset(self,end_time=None):
+			self.__kill=1
+			self.timer.reset()
+			if end_time is not None:
+				self.et=end_time			
+
+def SIGUSR1_handle(signum, frame):
+	raise Exception("Timeout")
+
 		
 
-
-if __name__ == ("__main__"):
-
-	try:		
-		T1 = Timer(3,"m")
-		T1.start()
-		while T1.lap()<20:
-			print T1.lap()	
-	except:
-		raise
-		
+if __name__ == '__main__':
+	
+	
+	 signal.signal(signal.SIGUSR1,SIGUSR1_handle)
+	 T2 = Timeout(end_time=5,format='s')
+	 T1 = Timer()
+	 print T2
+	 T2.start()
+	 T1.start()
+	 try:
+		 while T1.lap()<1:
+			 print T1.lap()
+		 T2.reset()
+	 except Exception as e:
+		 pass
+	 finally:
+		 print "done"
+	 #time.sleep(10)
 		 		
 	
 
