@@ -4,6 +4,7 @@
 import time
 import sys
 import signal
+import Custom_time as Tm
 try:
 	import RPi.GPIO as GPIO
 except RuntimeError:
@@ -31,28 +32,9 @@ class RC:
 		return self.code & int('111111',2)
 	def __address(self,code):
 		return self.code & int('11111000000',2)>>6
-	#def __process(self,Pin):
-class Quad:
-	def __init__(self,w,l):
-		self.width=w
-		self.length=l
-	def area(self):
-		return (self.width*self.length)
+	#def __process(self,Pin): 
 
-
-class timer:
-	def __init__(self,sec=1):
-		signal.signal(signal.SIGALRM,self.__timeout) #signal handler setting
-		self.sec=sec
-	def start(self):
-		signal.alarm(self.sec) #Only accepts integer seconds
-	def clear(self):
-		signal.alarm(0)
-	def __timeout(self,signum,frame): #always have signum, frame for signal handler
-		raise Exception("")# Raise and Exception. See Exception class 
-
-		
-		
+				
 def comp(num,base,TOL):
 	if abs(num-base)<TOL:
 		return True
@@ -66,7 +48,7 @@ def sigINT_handler(signum, frame):
 if __name__ == '__main__':
 
 
-	signal.signal(signal.SIGINT,sigINT_handler)	
+	signal.signal(signal.SIGINT,signal.SIG_DFL)	
 
 	t=[]
 	tdiff=[] 
@@ -78,11 +60,12 @@ if __name__ == '__main__':
 	GPIO.wait_for_edge(inPin, GPIO.FALLING)
 	t.append(time.time())
 	try:	
-		t1 = timer(1)	
+		T1 = Tm.Timeout(end_time=100,format='m')
 		while True:
-			t1.start()
+			#Tm.start(T1)
+			print "hello"
 			GPIO.wait_for_edge(inPin, GPIO.FALLING)
-			t1.clear()
+			#Tm.reset(T1)
 			t.append(time.time())
 			tdiff.append(t[i+1]-t[i])
 			i+=1

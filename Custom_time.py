@@ -85,7 +85,10 @@ def start(T):
 		temp.et = T.et
 		temp.timer=T.timer
 		T = temp
-	T.start()
+		T.start()
+		print T.is_alive()
+	else:
+		raise Exception("Timer is already running. You should reset it before running another one")
 
 def reset(T):
 	T.reset()
@@ -119,7 +122,12 @@ if __name__ == '__main__':
 	 finally:
 		 print "done 1"
 		 
+	 print T2.is_alive()	
 	 start(T2)
+	 print T2.is_alive()	
+	 reset(T2)
+	 print T2.is_alive()	
+	 
 	 T1.start()
 	 try:
 		 while T1.lap()<10:

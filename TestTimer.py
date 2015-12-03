@@ -28,7 +28,7 @@ try:
 		print "%i"%i
 	print "while"
 #except KeyboardInterrupt:
-#	pass	
+#	pass	#No need for this, as we have already defined a handler
 except:
 	pass
 finally:
