@@ -6,6 +6,7 @@ import sys
 import signal
 import threading
 import os
+import copy
 
 	
 
@@ -76,8 +77,22 @@ class Timeout(threading.Thread):
 			self.__kill=1
 			self.timer.reset()
 			if end_time is not None:
-				self.et=end_time			
+				self.et=end_time
 
+def start(T):
+	if not T.is_alive():
+		temp = Timeout()
+		temp.et = T.et
+		temp.timer=T.timer
+		T = temp
+	T.start()
+
+def reset(T):
+	T.reset()
+	#T.join()
+				
+				
+				
 def SIGUSR1_handle(signum, frame):
 	raise Exception("Timeout")
 
@@ -87,19 +102,35 @@ if __name__ == '__main__':
 	
 	
 	 signal.signal(signal.SIGUSR1,SIGUSR1_handle)
-	 T2 = Timeout(end_time=5,format='s')
+	 T2 = Timeout(end_time=2,format='m')
 	 T1 = Timer()
 	 print T2
-	 T2.start()
+	 start(T2)
 	 T1.start()
 	 try:
-		 while T1.lap()<1:
-			 print T1.lap()
-		 T2.reset()
+		 while T1.lap()<10:
+			if T1.lap()>1:
+				reset(T2)
+			print T1.lap()
+			T1.reset()
 	 except Exception as e:
-		 pass
+		T1.reset()
+		pass
 	 finally:
-		 print "done"
+		 print "done 1"
+		 
+	 start(T2)
+	 T1.start()
+	 try:
+		 while T1.lap()<10:
+			if T1.lap()>10:
+				T2.reset()
+			print T1.lap()
+			T1.reset()
+	 except Exception as e:
+		pass
+	 finally:
+		 print "done 2"
 	 #time.sleep(10)
 		 		
 	
